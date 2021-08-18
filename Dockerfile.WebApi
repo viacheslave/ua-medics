@@ -1,0 +1,43 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
+
+COPY ./src/UA.Medics.SyncWorker/UA.Medics.SyncWorker.csproj \
+      /usr/src/app/src/UA.Medics.SyncWorker/UA.Medics.SyncWorker.csproj
+
+COPY ./src/UA.Medics.Domain/UA.Medics.Domain.csproj \
+      /usr/src/app/src/UA.Medics.Domain/UA.Medics.Domain.csproj
+
+COPY ./src/UA.Medics.Application/UA.Medics.Application.csproj \
+      /usr/src/app/src/UA.Medics.Application/UA.Medics.Application.csproj
+
+COPY ./src/UA.Medics.Infrastructure.Configuration/UA.Medics.Infrastructure.Configuration.csproj \
+      /usr/src/app/src/UA.Medics.Infrastructure.Configuration/UA.Medics.Infrastructure.Configuration.csproj
+
+COPY ./src/UA.Medics.Infrastructure.Data/UA.Medics.Infrastructure.Data.csproj \
+      /usr/src/app/src/UA.Medics.Infrastructure.Data/UA.Medics.Infrastructure.Data.csproj
+
+COPY ./src/UA.Medics.Infrastructure.DataProvider/UA.Medics.Infrastructure.DataProvider.csproj \
+      /usr/src/app/src/UA.Medics.Infrastructure.DataProvider/UA.Medics.Infrastructure.DataProvider.csproj
+
+COPY ./src/UA.Medics.Infrastructure.Jobs/UA.Medics.Infrastructure.Jobs.csproj \
+      /usr/src/app/src/UA.Medics.Infrastructure.Jobs/UA.Medics.Infrastructure.Jobs.csproj
+
+COPY ./src/UA.Medics.WebApi/UA.Medics.WebApi.csproj \
+      /usr/src/app/src/UA.Medics.WebApi/UA.Medics.WebApi.csproj
+
+COPY ./tests/UA.Medics.Tests/UA.Medics.Tests.csproj \
+      /usr/src/app/tests/UA.Medics.Tests/UA.Medics.Tests.csproj
+
+COPY ./UA.Medics.sln /usr/src/app/UA.Medics.sln
+
+WORKDIR /usr/src/app
+RUN dotnet restore
+
+COPY . /usr/src/app
+RUN dotnet build -c Release
+RUN dotnet publish -o "artifact" -c Release -r ubuntu.20.04-x64 --self-contained false "src/UA.Medics.WebApi/UA.Medics.WebApi.csproj"
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 as release
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/artifact .
+EXPOSE 80
+CMD [ "./UA.Medics.WebApi" ]

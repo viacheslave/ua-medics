@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>UA.Medics.Infrastructure.DataProvider</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.1.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.36" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UA.Medics.Application\UA.Medics.Application.csproj" />
+    <ProjectReference Include="..\UA.Medics.Domain\UA.Medics.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Page\DTOs\" />
+  </ItemGroup>
+
+</Project>
