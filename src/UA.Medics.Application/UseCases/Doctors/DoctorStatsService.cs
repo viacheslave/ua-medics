@@ -41,12 +41,10 @@ namespace UA.Medics.Infrastructure.Data
 
 		public async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors(GetNewDoctorsQuery query)
 		{
-			const int newDoctorsRangeDays = 60;
-
 			var comparingDates = DateRangeHelper.GetComparingDates(
 				GetDates(),
-				earliest: query.date.AddDays(-newDoctorsRangeDays), 
-				latest:   query.date);
+				earliest: query.dateFrom, 
+				latest:   query.dateTo);
 
 			var results = new List<NewDoctorInfoDto>();
 
@@ -59,12 +57,10 @@ namespace UA.Medics.Infrastructure.Data
 
 		public async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors(GetDismissedDoctorsQuery query)
 		{
-			const int newDoctorsRangeDays = 60;
-
 			var comparingDates = DateRangeHelper.GetComparingDates(
 				GetDates(),
-				earliest: query.date.AddDays(-newDoctorsRangeDays),
-				latest: query.date);
+				earliest: query.dateFrom,
+				latest: query.dateTo);
 
 			var results = new List<DismissedDoctorInfoDto>();
 

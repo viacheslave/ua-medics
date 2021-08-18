@@ -7,9 +7,9 @@ namespace UA.Medics.Application
 {
 	public record GetDoctorsQuery : IRequest<IEnumerable<DoctorInfoDto>> { }
 
-	public record GetNewDoctorsQuery(DateTime date) : IRequest<IEnumerable<NewDoctorInfoDto>> { }
+	public record GetNewDoctorsQuery(DateTime dateFrom, DateTime dateTo) : IRequest<IEnumerable<NewDoctorInfoDto>> { }
 
-	public record GetDismissedDoctorsQuery(DateTime date) : IRequest<IEnumerable<DismissedDoctorInfoDto>> { }
+	public record GetDismissedDoctorsQuery(DateTime dateFrom, DateTime dateTo) : IRequest<IEnumerable<DismissedDoctorInfoDto>> { }
 
 	public record GetDoctorStatsQuery(Guid LegalEntityId, int PartyTempId) : IRequest<DoctorStatsDto> { };
 }

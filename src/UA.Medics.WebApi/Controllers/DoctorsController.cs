@@ -28,7 +28,19 @@ namespace UA.Medics.WebApi.Controllers
 		[HttpGet("new")]
 		public async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors()
 		{
-			return await Mediator.Send(new GetNewDoctorsQuery(DateTime.Today));
+			return await Mediator.Send(
+				new GetNewDoctorsQuery(DateTime.Today.AddDays(-60), DateTime.Today));
+		}
+
+		/// <summary>
+		///		Returns newest doctors according to the lattest stats
+		/// </summary>
+		/// <returns>Collection of new doctors</returns>
+		[HttpGet("new/latest")]
+		public async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctorsLatest()
+		{
+			return await Mediator.Send(
+				new GetNewDoctorsQuery(DateTime.Today, DateTime.Today));
 		}
 
 		/// <summary>
@@ -38,7 +50,19 @@ namespace UA.Medics.WebApi.Controllers
 		[HttpGet("dismissed")]
 		public async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors()
 		{
-			return await Mediator.Send(new GetDismissedDoctorsQuery(DateTime.Today));
+			return await Mediator.Send(
+				new GetDismissedDoctorsQuery(DateTime.Today.AddDays(-60), DateTime.Today));
+		}
+
+		/// <summary>
+		///		Returns dismissed doctors according to the lattest stats
+		/// </summary>
+		/// <returns>Collection of new doctors</returns>
+		[HttpGet("dismissed/latest")]
+		public async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctorsLatest()
+		{
+			return await Mediator.Send(
+				new GetDismissedDoctorsQuery(DateTime.Today, DateTime.Today));
 		}
 
 		/// <summary>
