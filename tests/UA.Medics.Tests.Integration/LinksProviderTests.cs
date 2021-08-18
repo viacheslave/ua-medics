@@ -3,8 +3,9 @@ using UA.Medics.Domain;
 using UA.Medics.Infrastructure.DataProvider;
 using Xunit;
 
-namespace UA.Medics.Tests
+namespace UA.Medics.Tests.Integration
 {
+	[Trait("Category", "Integration")]
 	public class LinksProviderTests
 	{
 		[Theory]
@@ -14,7 +15,9 @@ namespace UA.Medics.Tests
 		[InlineData(DataSetType.StatsDeclarationsByDoctorAge)]
 		public async Task Should_GetLinks_Return_Links_Collection(DataSetType type)
 		{
-			var linksProvider = new LinksProvider(new PageParser(new System.Net.Http.HttpClient()));
+			var linksProvider = new LinksProvider(
+				new PageParser(
+					new System.Net.Http.HttpClient()));
 
 			var links = await linksProvider.GetLinks(type);
 

@@ -27,6 +27,9 @@ COPY ./src/UA.Medics.WebApi/UA.Medics.WebApi.csproj \
 COPY ./tests/UA.Medics.Tests/UA.Medics.Tests.csproj \
       /usr/src/app/tests/UA.Medics.Tests/UA.Medics.Tests.csproj
 
+COPY ./tests/UA.Medics.Tests.Integration/UA.Medics.Tests.Integration.csproj \
+      /usr/src/app/tests/UA.Medics.Tests.Integration/UA.Medics.Tests.Integration.csproj
+
 COPY ./UA.Medics.sln /usr/src/app/UA.Medics.sln
 
 WORKDIR /usr/src/app

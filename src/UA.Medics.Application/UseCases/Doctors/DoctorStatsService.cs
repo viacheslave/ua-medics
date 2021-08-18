@@ -41,8 +41,11 @@ namespace UA.Medics.Infrastructure.Data
 
 		public async Task<IEnumerable<DoctorInfoDto>> GetNewDoctors(GetNewDoctorsQuery query)
 		{
-			var comparingDates = GetComparingDates(
-				earliest: query.date.AddDays(-60), 
+			const int newDoctorsRangeDays = 60;
+
+			var comparingDates = DateRangeHelper.GetComparingDates(
+				GetDates(),
+				earliest: query.date.AddDays(-newDoctorsRangeDays), 
 				latest:   query.date);
 
 			var results = new List<DoctorInfoDto>();
@@ -90,11 +93,13 @@ namespace UA.Medics.Infrastructure.Data
 			return dto;
 		}
 
-		private async Task<IEnumerable<DoctorInfoDto>> GetNewDoctors((DateTime previousDate, DateTime currentDate) dates)
+		private async Task<IEnumerable<DoctorInfoDto>> GetNewDoctors(DateTime date)
 		{
+			const int statsIntervalDays = 7;
+
 			var previousDoctors =
 				(from s in _dbContext.StatsByDoctorAge
-				 where s.StatsDate == dates.previousDate
+				 where s.StatsDate == date.AddDays(-statsIntervalDays)
 				 group s by new { s.LegalEntityId, s.PartyTempId }
 				into g
 				 select g.Key).ToList();
@@ -104,7 +109,7 @@ namespace UA.Medics.Infrastructure.Data
 
 			var currentDoctors =
 				(from s in _dbContext.StatsByDoctorAge
-				 where s.StatsDate == dates.currentDate
+				 where s.StatsDate == date
 				 group s by new { s.LegalEntityId, s.PartyTempId }
 				into g
 				 select g.Key).ToList();
@@ -138,30 +143,13 @@ namespace UA.Medics.Infrastructure.Data
 					LegalEntityId = legalEntity?.Id,
 					LegalEntityName = legalEntity?.Name,
 					LegalEntityCareType = legalEntity?.CareType,
-					AvailableFrom = dates.currentDate
+					AvailableFrom = date
 				};
 
 				doctorInfos.Add(doctorInfo);
 			}
 
 			return doctorInfos;
-		}
-
-		private IReadOnlyList<(DateTime previousDate, DateTime currentDate)> GetComparingDates(DateTime earliest, DateTime latest)
-		{
-			var dates = GetDates();
-			var result = new List<(DateTime previousDate, DateTime currentDate)>();
-
-			for (var index = dates.Count - 1; index >= 0; --index)
-			{
-				if (dates[index] < earliest)
-					break;
-
-				if (dates[index] <= latest)
-					result.Add((dates[index].AddDays(-7), dates[index]));
-			}
-
-			return result;
 		}
 
 		private IReadOnlyList<DateTime> GetDates()

@@ -6,10 +6,10 @@ using UA.Medics.Domain;
 using UA.Medics.Infrastructure.DataProvider;
 using Xunit;
 
-namespace UA.Medics.Tests
+namespace UA.Medics.Tests.Integration
 {
 	[Trait("Category", "Integration")]
-  public class CsvRecordsProviderTests
+  public class FileDownloderTests
 	{
     [Fact]
     public async Task CsvRecords_Collection_Test()
