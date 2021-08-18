@@ -41,7 +41,7 @@ namespace UA.Medics.Infrastructure.Data
 
 		public async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors(GetNewDoctorsQuery query)
 		{
-			var comparingDates = DateRangeHelper.GetComparingDates(
+			var comparingDates = DateRangeHelper.GetDatePairs(
 				GetDates(),
 				earliest: query.dateFrom, 
 				latest:   query.dateTo);
@@ -57,7 +57,7 @@ namespace UA.Medics.Infrastructure.Data
 
 		public async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors(GetDismissedDoctorsQuery query)
 		{
-			var comparingDates = DateRangeHelper.GetComparingDates(
+			var comparingDates = DateRangeHelper.GetDatePairs(
 				GetDates(),
 				earliest: query.dateFrom,
 				latest: query.dateTo);
@@ -107,13 +107,11 @@ namespace UA.Medics.Infrastructure.Data
 			return dto;
 		}
 
-		private async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors(DateTime date)
+		private async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors((DateTime previousDate, DateTime currentDate) dateRange)
 		{
-			const int statsIntervalDays = 7;
-
 			var previousDoctors =
 				(from s in _dbContext.StatsByDoctorAge
-				 where s.StatsDate == date.AddDays(-statsIntervalDays)
+				 where s.StatsDate == dateRange.previousDate
 				 group s by new { s.LegalEntityId, s.PartyTempId }
 				into g
 				 select g.Key).ToList();
@@ -123,7 +121,7 @@ namespace UA.Medics.Infrastructure.Data
 
 			var currentDoctors =
 				(from s in _dbContext.StatsByDoctorAge
-				 where s.StatsDate == date
+				 where s.StatsDate == dateRange.currentDate
 				 group s by new { s.LegalEntityId, s.PartyTempId }
 				into g
 				 select g.Key).ToList();
@@ -157,7 +155,7 @@ namespace UA.Medics.Infrastructure.Data
 					LegalEntityId = legalEntity?.Id,
 					LegalEntityName = legalEntity?.Name,
 					LegalEntityCareType = legalEntity?.CareType,
-					AvailableFrom = date
+					AvailableFrom = dateRange.currentDate
 				};
 
 				doctorInfos.Add(doctorInfo);
@@ -166,13 +164,11 @@ namespace UA.Medics.Infrastructure.Data
 			return doctorInfos;
 		}
 
-		private async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors(DateTime date)
+		private async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors((DateTime previousDate, DateTime currentDate) dateRange)
 		{
-			const int statsIntervalDays = 7;
-
 			var previousDoctors =
 				(from s in _dbContext.StatsByDoctorAge
-				 where s.StatsDate == date.AddDays(-statsIntervalDays)
+				 where s.StatsDate == dateRange.previousDate
 				 group s by new { s.LegalEntityId, s.PartyTempId }
 				into g
 				 select g.Key).ToList();
@@ -182,7 +178,7 @@ namespace UA.Medics.Infrastructure.Data
 
 			var currentDoctors =
 				(from s in _dbContext.StatsByDoctorAge
-				 where s.StatsDate == date
+				 where s.StatsDate == dateRange.currentDate
 				 group s by new { s.LegalEntityId, s.PartyTempId }
 				into g
 				 select g.Key).ToList();
@@ -216,7 +212,7 @@ namespace UA.Medics.Infrastructure.Data
 					LegalEntityId = legalEntity?.Id,
 					LegalEntityName = legalEntity?.Name,
 					LegalEntityCareType = legalEntity?.CareType,
-					DismissedFrom = date
+					DismissedFrom = dateRange.currentDate
 				};
 
 				doctorInfos.Add(doctorInfo);

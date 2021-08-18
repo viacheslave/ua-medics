@@ -6,24 +6,19 @@ namespace UA.Medics.Infrastructure.Data
 {
 	internal static class DateRangeHelper
 	{
-		public static IReadOnlyList<DateTime> GetComparingDates(
-			IReadOnlyList<DateTime> dates, DateTime earliest, DateTime latest)
+		public static IReadOnlyList<(DateTime previousDate, DateTime currentDate)> GetDatePairs(
+			IReadOnlyList<DateTime> dates, 
+			DateTime earliest, 
+			DateTime latest)
 		{
-			var result = new List<DateTime>();
+			var result = new List<(DateTime previousDate, DateTime currentDate)>();
 
-			foreach (var date in dates)
-				if (earliest <= date && date <= latest)
-					result.Add(date);
+			for (int i = 0; i < dates.Count; i++)
+				if (i > 0 && earliest <= dates[i] && dates[i] <= latest)
+					result.Add((dates[i - 1], dates[i]));
 
 			if (result.Count == 0)
-			{
-				var lastDateLessThan = dates.LastOrDefault(d => d <= latest);
-				
-				result.Add(
-					lastDateLessThan == default 
-						? dates[^1] 
-						: lastDateLessThan);
-			}
+				result.Add((dates[^2], dates[^1]));
 
 			return result;
 		}
