@@ -26,9 +26,19 @@ namespace UA.Medics.WebApi.Controllers
 		/// </summary>
 		/// <returns>Collection of new doctors</returns>
 		[HttpGet("new")]
-		public async Task<IEnumerable<DoctorInfoDto>> GetNewDoctors()
+		public async Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors()
 		{
 			return await Mediator.Send(new GetNewDoctorsQuery(DateTime.Today));
+		}
+
+		/// <summary>
+		///		Returns dismissed doctors
+		/// </summary>
+		/// <returns>Collection of new doctors</returns>
+		[HttpGet("dismissed")]
+		public async Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors()
+		{
+			return await Mediator.Send(new GetDismissedDoctorsQuery(DateTime.Today));
 		}
 
 		/// <summary>

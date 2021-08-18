@@ -2,7 +2,7 @@
 
 namespace UA.Medics.Domain
 {
-	public class DoctorInfoDto
+	public class NewDoctorInfoDto
 	{
 		public int Id { get; set; }
 
@@ -15,5 +15,7 @@ namespace UA.Medics.Domain
 		public string LegalEntityName { get; set; }
 
 		public string LegalEntityCareType { get; set; }
+
+		public DateTime AvailableFrom { get; set; }
 	}
 }

@@ -9,7 +9,9 @@ namespace UA.Medics.Application
 	{
 		Task<IEnumerable<DoctorInfoDto>> GetDoctors(GetDoctorsQuery query);
 
-		Task<IEnumerable<DoctorInfoDto>> GetNewDoctors(GetNewDoctorsQuery query);
+		Task<IEnumerable<NewDoctorInfoDto>> GetNewDoctors(GetNewDoctorsQuery query);
+
+		Task<IEnumerable<DismissedDoctorInfoDto>> GetDismissedDoctors(GetDismissedDoctorsQuery query);
 
 		Task<DoctorStatsDto> GetDoctorStats(GetDoctorStatsQuery query);
 	}

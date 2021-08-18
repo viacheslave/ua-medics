@@ -6,7 +6,7 @@ using UA.Medics.Domain;
 
 namespace UA.Medics.Application.UseCases.Doctors.Queries
 {
-	public class GetNewDoctorsQueryHandler : IRequestHandler<GetNewDoctorsQuery, IEnumerable<DoctorInfoDto>>
+	public class GetNewDoctorsQueryHandler : IRequestHandler<GetNewDoctorsQuery, IEnumerable<NewDoctorInfoDto>>
 	{
 		private readonly IDoctorStatsService _doctorStatsService;
 
@@ -15,7 +15,7 @@ namespace UA.Medics.Application.UseCases.Doctors.Queries
 			_doctorStatsService = doctorStatsService;
 		}
 
-		public Task<IEnumerable<DoctorInfoDto>> Handle(GetNewDoctorsQuery request, CancellationToken cancellationToken)
+		public Task<IEnumerable<NewDoctorInfoDto>> Handle(GetNewDoctorsQuery request, CancellationToken cancellationToken)
 		{
 			return _doctorStatsService.GetNewDoctors(request);
 		}
